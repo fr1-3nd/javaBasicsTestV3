@@ -1,0 +1,59 @@
+Zadanie 01:
+Bez uzycia struktur danych typu kolekcje, tablice, mapy czy zapisywania do pliku, nalezy stworzyc klase ObjectContainer w taki sposob aby wykonal
+sie ponizszy kod: (przyklad dla klasy Person (name, city, age) - ale ma dzialac dla dowolnej klasy)
+
+ObjectContainer<Person> peopleFromWarsaw = new ObjectContainer(p -> p.getCity().equals("Warsaw"));//tu w konstruktorze podajemy warunek do dodawania osoby do kontenera.
+peopleFromWarsaw.add(new Person("Jan", "Warsaw", 30)); // powinno byc ok, Jan jest z warszawy
+peopleFromWarsaw.add(new Person("Weronika","Warsaw", 20)); // powinno byc tez okej, Weronika jest z warszawy
+peopleFromWarsaw.add(new Person("Waldek", "Monaco", 34));// waldka niedoda, jest z Monaco, wiec tu powinno albo rzucic wyjatkiem, albo metoda add powinna zwrocic po prostu false - co wybierzesz to twoja decyzja.
+
+//do tego ponizej mozesz juz stosowac liste, no bo masz zwrocic liste:)
+List<Person> females = peopleFromWarsaw.getWithFilter(p -> p.getName().endsWith("a")); // zwraca nam wszystkie osoby spelniajace dany warunek.
+
+peopleFromWarsaw.removeIf(p -> p.getAge() > 50); // powinno nam usuwac ludzi spelniajacy dany warunek w nawiasie.
+
+//tu naturalnie mozesz stosowac zapis do pliku bo wymaga tego polecenie
+peopleFromWarsaw.storeToFile("youngPeopleFromWarsaw.txt", p -> p.getAge() < 30, p -> p.getName()+";"+p.getAge()+";"+p.getCity());
+//metoda powinna zapisac obiekty do pliku z pierwszego argumenty metody, tylko te co spelniaja drugi warunek metody, w formacie z trzeciego warunku metody
+
+Dobrze by było mieć warstwe persystencji, zrobmy np:
+peopleFromWarsaw.storeToFile("warsawPeople.txt"); // powinno nam zapisac dane trwale do pliku.
+
+//i np:
+ObjectContainer<Person> peopleFromWarsawFromFile = ObjectContainer.fromFile("warsawPeople.txt");
+//powinno byc equals:
+sout(peopleFromWarsawFromFile.equals(peopleFromWarsaw));
+
+Zadanie 02:
+dana jest tablica intow o rozmiarze 200 mln elementow, elementy maja losowe wartosci z pelnego zakresu inta.
+- policz ile czasu potrwa liczenie sumy wszystkich elementow uzywajac 1 watku
+- policz ile czasu potrwa liczenie sumy wszystkich elementow 2 watkow
+- policz ile czasu potrwa liczenie sumy wszystkich elementow 4 watkow
+- policz ile czasu potrwa liczenie sumy wszystkich elementow 8 watkow
+w komentarzu wypisz raport jak postępuje czas wraz ze wzrostem ilosci watkow. [lub jak spada]
+
+Zadanie 03:
+trzeba napisac metodę Map<String, Integer> countPrimitives(File ... javaFiles)
+Zadaniem metody jest policzenie i zwrocenie raportu w postaci mapy: ile jest zmiennych prymitywnych w kazdym z plikow java.
+np: intow jest 5, doubli jest 3, booleanow sa 2. itp.
+UWAGA: nalezy sie upewnic ze przekazane pliki istnieja i sa plikami java [jesli nie to je pomijamy]
+UWAGA: wyszukiwanie ma sie dziec rownolegle dla wszystkich plikow.
+UWAGA: pomijamy zmienne w literałach oraz komentarzach tj jak mamy:
+
+String napis = "ala ma kota int x = 5; basia ma psa;
+// to jest komentarz int x = 5
+/* to jest
+komentarz
+int x = 5;
+*/
+to takie rzeczy maja byc pomijane nie ma tu zadnego zadeklarowanego prymitywu, (i polecam sobie taki plik dla testow zrobic)
+
+
+Zadanie 04:
+Aplikacje mozesz odpalic jako PUBLIKATOR
+albo jako CONSUMER
+
+jesli odpalisz jako CONSUMER to jestes w trybie nasluchu i dostajesz wiadomosci publikowane przez PUBLIKATORA
+jesli odpalisz jako PUBLIKATOR to jestes w stanie wyslac jedna wiadomosc do wszystkich CONSUMEROW (aktywnie polaczonych)
+
+uwaga: gdy nie ma zadnego aktywnego consuemra, wiadomosc musi poczekac tak dlugo az sie jakis pojawi.
